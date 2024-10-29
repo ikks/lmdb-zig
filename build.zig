@@ -4,7 +4,7 @@ pub fn build(b: *std.Build) void {
     var target = b.standardTargetOptions(.{});
     if (target.result.isGnuLibC()) target.result.abi = .musl;
 
-    const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseFast });
+    const optimize = b.standardOptimizeOption(.{});
 
     const lib = b.addStaticLibrary(.{ .name = "lmdb-zig", .target = target, .optimize = optimize });
     const dep_lmdb_c = b.dependency("lmdb_c", .{ .target = target, .optimize = optimize });

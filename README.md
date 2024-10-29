@@ -113,10 +113,10 @@ pub fn main() !void {
 
 my output (with `-Doptimize=ReleaseFast` and 20 yo laptop):
 ```
-write 2000 keys 1856585 ms 1077 ops/s
-read 2000*1000 keys 1399412 ms 1429171 ops/s
+write 2000 keys 1749905 ms 1142 ops/s
+read 2000*1000 keys 481761 ms 4151434 ops/s
 ```
-so ~1.08K writes/s and ~1.43M reads/s
+so ~1.1K writes/s and ~4.5M reads/s
 
 
 
@@ -144,7 +144,7 @@ but fully reworked to compile with Zig 0.13
 ## Devlog & TODO
 - [x] reimplement [lithdew's and iacore's lmdb-zig](https://github.com/iacore/lmdb-zig) repo 
   to run on Zig 0.13 & run tests & publish
-- [ ] fix example and install instructions
+- [x] fix example & install
 - [ ] fix `.put_batch()` segfault & test
 - [ ] rework api to be less messy in real use
 - [ ] indie benchmark with RocksDB and BerkleyDB
