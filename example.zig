@@ -38,7 +38,7 @@ pub fn main() !void {
         try tx.commit();
     }
     const ns_write = t.read();
-    std.debug.print("write {d} keys {d:.2} ms {d:.2} ops/s\n", .{ iters, ns_write / 1_000_000, (iters * 1_000_000_000) / ns_write });
+    std.debug.print("write {d} keys {d:.2} ms {d:.2} ops/s\n", .{ iters, ns_write / 1_000, (iters * 1_000_000_000) / ns_write });
     t.reset();
     const get_iters_mul = 1000;
     for (0..get_iters_mul) |_| for (keys) |k| {
@@ -52,5 +52,5 @@ pub fn main() !void {
         try tx.commit();
     };
     const ns_read = t.read();
-    std.debug.print("read {d}*{d} keys {d:.2} ms {d:.2} ops/ms\n", .{ iters, get_iters_mul, ns_read / 1_000_000, (get_iters_mul * iters * 1_000_000) / ns_write });
+    std.debug.print("read {d}*{d} keys {d:.2} ms {d:.2} ops/s\n", .{ iters, get_iters_mul, ns_read / 1_000, (get_iters_mul * iters * 1_000_000_000) / ns_read });
 }

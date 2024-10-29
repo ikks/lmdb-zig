@@ -32,15 +32,15 @@
   after `lib`, but before `b.intallArtifact(lib)`:
 
   ```zig
-  const lmdb = b.dependency("lmdb-zig", .{ .target = target, .optimize = optimize });
-  lib.linkLibrary(lmdb);
+  const lmdb_zig = b.dependency("lmdb-zig", .{ .target = target, .optimize = optimize });
+  lib.linkLibrary(lmdb_zig.artifact("lmdb-zig"));
   ```
 
   after `exe`, but before `b.intallArtifact(exe)`:
   
   ```zig
-  exe.root_module.addImport("lmdb-zig", lmdb.module("lmdb-zig-mod"));
-  exe.linkLibrary(lmdb);
+  exe.root_module.addImport("lmdb-zig", lmdb_zig.module("lmdb-zig-mod"));
+  exe.linkLibrary(lmdb_zig.artifact("lmdb-zig"));
   ```
 - import
   ```zig
@@ -92,7 +92,7 @@ pub fn main() !void {
         try tx.commit();
     }
     const ns_write = t.read();
-    std.debug.print("write {d} keys {d:.2} ms {d:.2} ops/s\n", .{ iters, ns_write / 1_000_000, (iters * 1_000_000_000) / ns_write });
+    std.debug.print("write {d} keys {d:.2} ms {d:.2} ops/s\n", .{ iters, ns_write / 1_000, (iters * 1_000_000_000) / ns_write });
     t.reset();
     const get_iters_mul = 1000;
     for (0..get_iters_mul) |_| for (keys) |k| {
@@ -106,17 +106,17 @@ pub fn main() !void {
         try tx.commit();
     };
     const ns_read = t.read();
-    std.debug.print("read {d}*{d} keys {d:.2} ms {d:.2} ops/ms\n", .{ iters, get_iters_mul, ns_read / 1_000_000, (get_iters_mul * iters * 1_000_000) / ns_write });
+    std.debug.print("read {d}*{d} keys {d:.2} ms {d:.2} ops/s\n", .{ iters, get_iters_mul, ns_read / 1_000, (get_iters_mul * iters * 1_000_000_000) / ns_read });
 }
 ```
 <br>
 
 my output (with `-Doptimize=ReleaseFast` and 20 yo laptop):
 ```
-write 2000 keys 1744 ms 1146 ops/s
-read 2000*1000 keys 482 ms 1146 ops/ms
+write 2000 keys 1856585 ms 1077 ops/s
+read 2000*1000 keys 1399412 ms 1429171 ops/s
 ```
-so ~1.15 write/s and ~1.15 Mil reads/s
+so ~1.08K writes/s and ~1.43M reads/s
 
 
 
@@ -129,7 +129,6 @@ so ~1.15 write/s and ~1.15 Mil reads/s
 - `Tx.get_or_put() twice`
 - `Tx: use multiple named databases in a single transaction`
 - `Tx: nest transaction inside transaction`
-- `Tx: custom key comparator`
 - `Tx: custom key comparator`
 - `Cursor: move around a database and add / delete some entries`
 - `Cursor: interact with variable-sized items in a database with duplicate keys`
@@ -145,6 +144,7 @@ but fully reworked to compile with Zig 0.13
 ## Devlog & TODO
 - [x] reimplement [lithdew's and iacore's lmdb-zig](https://github.com/iacore/lmdb-zig) repo 
   to run on Zig 0.13 & run tests & publish
+- [ ] fix example and install instructions
 - [ ] fix `.put_batch()` segfault & test
 - [ ] rework api to be less messy in real use
 - [ ] indie benchmark with RocksDB and BerkleyDB
