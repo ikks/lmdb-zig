@@ -25,7 +25,7 @@
   zig init
   ```
 - ```
-  zig fetch --save https://github.com/john-g4lt/lmdb-zig
+  zig fetch --save https://github.com/john-g4lt/lmdb-zig/archive/refs/tags/v0.1.0.tar.gz
   ```
 - add to `build.zig`
   
