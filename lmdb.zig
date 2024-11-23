@@ -1,4 +1,5 @@
 pub const std = @import("std");
+pub const builtin = @import("builtin");
 pub const assert = std.debug.assert;
 pub const c = @cImport(@cInclude("lmdb.h"));
 
@@ -692,8 +693,11 @@ test "Env: .init() .deinit() .stats() .info() and flags" {
     try test_eql((try env.info()).map_size, 8 * 1024 * 1024);
 
     // The file descriptor should be >= 0.
-
-    try test_eql_true((try env.to_fd()) >= 0);
+    if ( builtin.os.tag != .windows) {
+        // revisit https://github.com/ziglang/zig/issues/13586
+        // try testing with wine a vm or an actual windows OS
+        try test_eql_true((try env.to_fd()) >= 0);
+    }
 
     try test_eql((try env.purge()), 0);
 }
