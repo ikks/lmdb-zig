@@ -13,10 +13,12 @@ pub fn build(b: *std.Build) void {
     lib.installHeadersDirectory(lmdb_path, "", .{ .include_extensions = &.{"lmdb.h"} });
     lib.addIncludePath(lmdb_path);
     lib.linkLibC();
+    lib.installHeader(dep_lmdb_c.path("libraries/liblmdb/lmdb.h"), "lmdb.h");
     b.installArtifact(lib);
 
     const mod = b.addModule("lmdb-zig-mod", .{ .root_source_file = b.path("lmdb.zig") });
-    mod.addIncludePath(dep_lmdb_c.path(""));
+    mod.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ b.install_path, "include" }) });
+    mod.linkLibrary(lib);
     mod.addIncludePath(lmdb_path);
 
     const tests = b.addTest(.{ .name = "test", .root_source_file = mod.root_source_file.?, .target = target, .optimize = optimize });
